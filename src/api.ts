@@ -1,3 +1,5 @@
+import { MemePictureProps } from './components/meme-picture'
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
 export class UnauthorizedError extends Error {
@@ -142,5 +144,37 @@ export async function createMemeComment(token: string, memeId: string, content: 
       'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify({ content }),
+  }).then(res => checkStatus(res).json());
+}
+
+export type Picture = {
+  url: string;
+  file: File;
+};
+
+/**
+ * Create a meme
+ * @param token
+ * @param picture
+ * @param description
+ * @param texts
+ */
+export async function createMeme(token: string, picture: Picture, description: string, texts: MemePictureProps["texts"]): Promise<MemeResponse> {
+  const formData = new FormData();
+  formData.append("picture", picture.file);
+  formData.append("description", description);
+
+  texts.forEach((text, index) => {
+    formData.append(`texts[${index}][content]`, text.content);
+    formData.append(`texts[${index}][x]`, Math.round(text.x).toString());
+    formData.append(`texts[${index}][y]`, Math.round(text.y).toString());
+  });
+
+  return await fetch(`${ BASE_URL }/memes`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${ token }`
+    },
+    body: formData,
   }).then(res => checkStatus(res).json());
 }

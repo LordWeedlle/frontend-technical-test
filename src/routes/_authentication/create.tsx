@@ -10,7 +10,10 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useAlert } from '../../contexts/alert'
+import { useAuthToken } from '../../contexts/authentication'
+import { createMeme, Picture, UnauthorizedError } from '../../api'
 import { MemeEditor } from "../../components/meme-editor";
 import { useMemo, useState } from "react";
 import { MemePictureProps } from "../../components/meme-picture";
@@ -20,14 +23,13 @@ export const Route = createFileRoute("/_authentication/create")({
   component: CreateMemePage,
 });
 
-type Picture = {
-  url: string;
-  file: File;
-};
-
 function CreateMemePage() {
+  const token               = useAuthToken()
   const [picture, setPicture] = useState<Picture | null>(null);
   const [texts, setTexts] = useState<MemePictureProps["texts"]>([]);
+  const [description, setDescription] = useState("");
+  const navigate = useNavigate();
+  const { addAlert } = useAlert()
 
   const handleDrop = (file: File) => {
     setPicture({
@@ -67,6 +69,33 @@ function CreateMemePage() {
     };
   }, [picture, texts]);
 
+  const handleSubmit = async () => {
+    if (!picture) {
+      return;
+    }
+
+    try {
+      await createMeme(token, picture, description, texts);
+      await navigate({ to: "/" });
+    } catch (err) {
+      if (err instanceof UnauthorizedError) {
+        addAlert({
+          key: 'create meme',
+          message: 'Vous devez être connecté pour créer un meme',
+          severity: 'warning',
+        })
+
+        navigate({ to: "/login" });
+      } else {
+        addAlert({
+          key: 'create meme',
+          message: 'Une erreur est survenue lors de la création du meme, veuillez réessayer',
+          severity: 'error',
+        })
+      }
+    }
+  };
+
   return (
     <Flex width="full" height="full">
       <Box flexGrow={1} height="full" p={4} overflowY="auto">
@@ -81,7 +110,11 @@ function CreateMemePage() {
             <Heading as="h2" size="md" mb={2}>
               Describe your meme
             </Heading>
-            <Textarea placeholder="Type your description here..." />
+            <Textarea
+              placeholder="Type your description here..."
+              value={ description }
+              onChange={ e => setDescription(e.target.value) }
+            />
           </Box>
         </VStack>
       </Box>
@@ -145,6 +178,7 @@ function CreateMemePage() {
             width="full"
             color="white"
             isDisabled={memePicture === undefined}
+            onClick={ handleSubmit }
           >
             Submit
           </Button>
