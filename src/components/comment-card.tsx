@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { format } from 'timeago.js'
 import { Box, Flex, Text } from '@chakra-ui/react'
-import { CommentResponse, GetUserByIdResponse } from '../api'
+import { CreateCommentResponse, GetUserByIdResponse } from '../api'
 import { AuthorAvatar } from '../components/author/avatar'
 import { AuthorName } from '../components/author/name'
 import { useAuthToken } from '../contexts/authentication'
 import { useAuthorCache } from '../contexts/author'
 
 export type CommentCardProps = {
-  comment: CommentResponse
+  comment: CreateCommentResponse
   memeId: string,
 }
 

@@ -101,15 +101,7 @@ export async function getMemes(token: string, page: number): Promise<GetMemesRes
 export type GetMemeCommentsResponse = {
   total: number;
   pageSize: number;
-  results: CommentResponse[];
-}
-
-export type CommentResponse = {
-  id: string;
-  authorId: string;
-  memeId: string;
-  content: string;
-  createdAt: string;
+  results: CreateCommentResponse[];
 }
 
 /**
