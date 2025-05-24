@@ -169,7 +169,7 @@ export const MemeCard: React.FC<MemeCardProps> = ({ meme, user }) => {
                     [meme.id]: event.target.value,
                   })
                 } }
-                value={ commentContent[meme.id] }
+                value={ commentContent[meme.id] || '' }
                 data-testid={ `meme-comments-new-comment-${ meme.id }` }
               />
             </Flex>
