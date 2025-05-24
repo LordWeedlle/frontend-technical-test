@@ -36,7 +36,7 @@ function renderMemePicture(memePicture: MemePictureProps, open: () => void) {
         display: "none",
       },
     }}>
-      <MemePicture {...memePicture} />
+      <MemePicture {...memePicture} edit />
       <Button
         className="change-picture-button"
         leftIcon={<Icon as={Pencil} boxSize={4} />}

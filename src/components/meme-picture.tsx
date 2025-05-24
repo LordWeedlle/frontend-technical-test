@@ -10,6 +10,7 @@ export type MemePictureProps = {
   }[];
   onUpdateTextPosition?: (index: number, x: number, y: number) => void,
   dataTestId?: string;
+  edit: boolean;
 };
 
 const REF_WIDTH = 800;
@@ -21,6 +22,7 @@ export const MemePicture: React.FC<MemePictureProps> = ({
   texts: rawTexts,
   onUpdateTextPosition,
   dataTestId = '',
+  edit = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const dimensions = useDimensions(containerRef, true);
@@ -133,11 +135,11 @@ export const MemePicture: React.FC<MemePictureProps> = ({
           fontWeight="bold"
           userSelect="none"
           textTransform="uppercase"
-          style={{ WebkitTextStroke: "1px black", cursor: "move" }}
+          style={{ WebkitTextStroke: "1px black", cursor: edit ? "move" : "default" }}
           data-testid={`${dataTestId}-text-${index}`}
           onMouseDown={(e) => onMouseDown(index, e)}
           border="1px solid transparent"
-          _hover={{ borderColor: 'grey' }}
+          _hover={ edit ? { borderColor: 'grey' } : {}}
         >
           {text.content}
         </Box>
