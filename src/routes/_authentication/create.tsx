@@ -93,8 +93,16 @@ function CreateMemePage() {
         <Box p={4} flexGrow={1} height={0} overflowY="auto">
           <VStack>
             {texts.map((text, index) => (
-              <Flex width="full">
-                <Input key={index} value={text.content} mr={1} />
+              <Flex width="full" key={ index }>
+                <Input
+                  value={text.content}
+                  mr={1}
+                  onChange={(e) => {
+                    const newTexts = [...texts];
+                    newTexts[index].content = e.target.value;
+                    setTexts(newTexts);
+                  }}
+                />
                 <IconButton
                   onClick={() => handleDeleteCaptionButtonClick(index)}
                   aria-label="Delete caption"
