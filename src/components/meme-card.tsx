@@ -1,19 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import {
-  Box,
-  Collapse,
-  Flex,
-  Icon,
-  Input,
-  LinkBox,
-  LinkOverlay,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, Collapse, Flex, Icon, Input, LinkBox, LinkOverlay, Text, VStack } from '@chakra-ui/react'
 import { CaretDown, CaretUp, Chat } from '@phosphor-icons/react'
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
 import { format } from 'timeago.js'
-import { createMemeComment, getMemeComments, GetUserByIdResponse, MemeResponse } from '../api'
+import { createMemeComment, getMemeComments, GetMemeCommentsResponse, GetUserByIdResponse, MemeResponse } from '../api'
 import { AuthorAvatar } from '../components/author/avatar'
 import { AuthorName } from '../components/author/name'
 import { CommentCard } from '../components/comment-card'
@@ -28,10 +18,16 @@ export type MemeCardProps = {
   user: GetUserByIdResponse,
 }
 
+type CommentsInfiniteData = {
+  pages: GetMemeCommentsResponse[];
+  pageParams: unknown[];
+}
+
 export const MemeCard: React.FC<MemeCardProps> = ({ meme, user }) => {
   const token               = useAuthToken()
   const { getAuthor }       = useAuthorCache()
   const [author, setAuthor] = useState<GetUserByIdResponse | null>(null)
+  const queryClient         = useQueryClient()
 
   useEffect(() => {
     let mounted = true
@@ -53,7 +49,34 @@ export const MemeCard: React.FC<MemeCardProps> = ({ meme, user }) => {
   }>({})
   const { mutate }                                      = useMutation({
     mutationFn: async (data: { memeId: string; content: string }) => {
-      await createMemeComment(token, data.memeId, data.content)
+      return await createMemeComment(token, data.memeId, data.content)
+    },
+    onSuccess: (newComment) => {
+      // Update the cached comments
+      queryClient.setQueryData<CommentsInfiniteData>(['comments', meme.id], (oldData) => {
+        if (!oldData) {
+          return oldData;
+        }
+
+        // Add the new comment at start of the loaded comments
+        const newResults = [newComment, ...oldData.pages[0].results];
+
+        const newPages = [
+          {
+            ...oldData.pages[0],
+            results: newResults,
+          },
+          ...oldData.pages.slice(1),
+        ];
+
+        return {
+          ...oldData,
+          pages: newPages,
+        };
+      });
+
+      // Clear the comment input
+      setCommentContent((prev) => ({ ...prev, [meme.id]: '' }));
     },
   })
 
