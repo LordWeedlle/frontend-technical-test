@@ -40,9 +40,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment, memeId }) => 
           alignItems="center"
         >
           <Flex>
-            <Text data-testid={ `meme-comment-author-${ memeId }-${ comment.id }` }>
-              <AuthorName author={ author } />
-            </Text>
+            <AuthorName author={ author } data-testid={ `meme-comment-author-${ memeId }-${ comment.id }` } />
           </Flex>
           <Text
             fontStyle="italic"

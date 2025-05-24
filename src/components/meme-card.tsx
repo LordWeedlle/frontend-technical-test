@@ -103,9 +103,7 @@ export const MemeCard: React.FC<MemeCardProps> = ({ meme, user }) => {
       <Flex justifyContent="space-between" alignItems="center">
         <Flex>
           <AuthorAvatar author={ author } />
-          <Text ml={ 2 } data-testid={ `meme-author-${ meme.id }` }>
-            <AuthorName author={ author } />
-          </Text>
+          <AuthorName author={ author } ml={ 2 } data-testid={ `meme-author-${ meme.id }` } />
         </Flex>
         <Text fontStyle="italic" color="gray.500" fontSize="small">
           { format(meme.createdAt) }
