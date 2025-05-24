@@ -66,19 +66,21 @@ export async function getUserById(token: string, id: string): Promise<GetUserByI
 export type GetMemesResponse = {
   total: number;
   pageSize: number;
-  results: {
-    id: string;
-    authorId: string;
-    pictureUrl: string;
-    description: string;
-    commentsCount: string;
-    texts: {
-      content: string;
-      x: number;
-      y: number;
-    }[];
-    createdAt: string;
-  }[]
+  results: MemeResponse[];
+}
+
+export type MemeResponse = {
+  id: string;
+  authorId: string;
+  pictureUrl: string;
+  description: string;
+  commentsCount: string;
+  texts: {
+    content: string;
+    x: number;
+    y: number;
+  }[];
+  createdAt: string;
 }
 
 /**
