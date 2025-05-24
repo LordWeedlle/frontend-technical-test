@@ -37,3 +37,5 @@ Object.defineProperty(global, 'IntersectionObserver', {
   writable: true,
   value: IntersectionObserverMock,
 });
+
+window.scrollTo = () => {};
