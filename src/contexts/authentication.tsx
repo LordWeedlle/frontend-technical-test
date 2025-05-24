@@ -4,6 +4,7 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -35,8 +36,24 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({
     isAuthenticated: false,
   });
 
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+
+    if (token) {
+      try {
+        const { id } = jwtDecode<{ id: string }>(token);
+        setState({ isAuthenticated: true, token, userId: id });
+      } catch (e) {
+        console.error('Invalid token in localStorage:', e);
+        localStorage.removeItem('jwt');
+      }
+    }
+  }, []);
+
   const authenticate = useCallback(
     (token: string) => {
+      localStorage.setItem('jwt', token);
+
       setState({
         isAuthenticated: true,
         token,
@@ -47,6 +64,8 @@ export const AuthenticationProvider: React.FC<PropsWithChildren> = ({
   );
 
   const signout = useCallback(() => {
+    localStorage.removeItem('jwt');
+
     setState({ isAuthenticated: false });
   }, [setState]);
 
