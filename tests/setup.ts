@@ -12,3 +12,28 @@ afterEach(() => {
   cleanup();
 });
 afterAll(() => server.close());
+
+class IntersectionObserverMock {
+  callback: IntersectionObserverCallback;
+  elements: Element[] = [];
+
+  constructor(callback: IntersectionObserverCallback) {
+    this.callback = callback;
+  }
+
+  observe = (element: Element) => {
+    this.elements.push(element);
+    const entries: IntersectionObserverEntry[] = [
+      { isIntersecting: true, target: element } as IntersectionObserverEntry
+    ];
+    this.callback(entries, this as unknown as IntersectionObserver);
+  };
+
+  unobserve = () => {};
+  disconnect = () => {};
+}
+
+Object.defineProperty(global, 'IntersectionObserver', {
+  writable: true,
+  value: IntersectionObserverMock,
+});
