@@ -6,7 +6,20 @@ import { handlers } from './mocks/handlers';
 
 const server = setupServer(...handlers);
 
-beforeAll(() => server.listen());
+beforeAll(() => {
+  server.listen()
+  Object.defineProperty(window, 'location', {
+    writable: true,
+    value: {
+      ...window.location,
+      href: '',
+    },
+  });
+
+  Object.defineProperty(window.location, 'href', {
+    set: vi.fn(),
+  });
+});
 afterEach(() => {
   server.resetHandlers();
   cleanup();
