@@ -2,6 +2,8 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { ChakraProvider } from "@chakra-ui/react";
+import { Alerts } from './components/alerts'
+import { AlertProvider } from './contexts/alert'
 import { theme } from "./config/theme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -40,7 +42,10 @@ if (!rootElement.innerHTML) {
       <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={theme}>
           <AuthenticationProvider>
-            <InnerApp />
+            <AlertProvider>
+              <Alerts />
+              <InnerApp />
+            </AlertProvider>
           </AuthenticationProvider>
         </ChakraProvider>
       </QueryClientProvider>
