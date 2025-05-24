@@ -116,6 +116,7 @@ export type CommentResponse = {
  * Get comments for a meme
  * @param token
  * @param memeId
+ * @param page
  * @returns
  */
 export async function getMemeComments(token: string, memeId: string, page: number): Promise<GetMemeCommentsResponse> {
