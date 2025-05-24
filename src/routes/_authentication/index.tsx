@@ -68,7 +68,7 @@ export const MemeFeedPage: React.FC = () => {
             {
               data?.pages.flatMap(page =>
                 page.results.map(meme => (
-                  <MemeCard key={ meme.id } meme={ meme } user={ user! } /> // FIXME: Do not use the exclamation point here, better redirect if no user
+                  <MemeCard key={ meme.id } meme={ meme } user={ user! } />
                 )),
               )
             }
