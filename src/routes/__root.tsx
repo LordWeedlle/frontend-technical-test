@@ -35,7 +35,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           boxShadow="md"
         >
           {/* Title */}
-          <Heading size="lg" color="white">
+          <Heading size="lg" color="white" as={ Link } to="/">
             MemeFactory
           </Heading>
           {state.isAuthenticated && (
