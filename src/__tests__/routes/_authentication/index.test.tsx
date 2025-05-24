@@ -83,5 +83,41 @@ describe("routes/_authentication/index", () => {
         expect(screen.getByTestId("meme-comment-author-dummy_meme_id_1-dummy_comment_id_3")).toHaveTextContent('dummy_user_3');
       });
     });
+
+    it("should display new comment after submitting", async () => {
+      renderMemeFeedPage();
+
+      // Wait for memes to load
+      await waitFor(() => {
+        expect(screen.getByTestId("meme-author-dummy_meme_id_1")).toHaveTextContent('dummy_user_1');
+      });
+
+      // Open the comment section
+      const showComments = screen.getByTestId("meme-comments-section-dummy_meme_id_1");
+      await act(() => fireEvent.click(showComments));
+
+      // Wait for comments to load
+      await waitFor(() => {
+        expect(screen.getByTestId("meme-comment-content-dummy_meme_id_1-dummy_comment_id_1")).toBeInTheDocument();
+      });
+
+      // Write a new comment
+      const input = screen.getByTestId("meme-comments-new-comment-dummy_meme_id_1");
+      fireEvent.change(input, { target: { value: "Here is a crazy comment" } });
+
+      // Submit the comment
+      fireEvent.submit(input.closest("form")!);
+
+      // Wait for the new comment to appear in the UI
+      await waitFor(() => {
+        expect(screen.getByText("Here is a crazy comment")).toBeInTheDocument();
+      });
+
+      // Get all comments  for that meme
+      const allComments = screen.getAllByTestId(/^meme-comment-content-dummy_meme_id_1-/);
+
+      // Assert the new comment is on top of the list
+      expect(allComments[0]).toHaveTextContent("Here is a crazy comment");
+    });
   });
 });

@@ -172,6 +172,7 @@ export const MemeCard: React.FC<MemeCardProps> = ({ meme, user }) => {
                   })
                 } }
                 value={ commentContent[meme.id] }
+                data-testid={ `meme-comments-new-comment-${ meme.id }` }
               />
             </Flex>
           </form>
