@@ -10,7 +10,7 @@ export type MemePictureProps = {
   }[];
   onUpdateTextPosition?: (index: number, x: number, y: number) => void,
   dataTestId?: string;
-  edit: boolean;
+  edit?: boolean;
 };
 
 const REF_WIDTH = 800;
