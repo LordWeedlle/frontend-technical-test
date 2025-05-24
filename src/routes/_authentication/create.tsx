@@ -51,7 +51,7 @@ function CreateMemePage() {
     setTexts(texts.filter((_, i) => i !== index));
   };
 
-  const memePicture = useMemo(() => {
+  const memePicture: MemePictureProps | undefined = useMemo(() => {
     if (!picture) {
       return undefined;
     }
@@ -59,6 +59,11 @@ function CreateMemePage() {
     return {
       pictureUrl: picture.url,
       texts,
+      onUpdateTextPosition: (index: number, x: number, y: number) => {
+        const newTexts = [...texts];
+        newTexts[index] = { ...newTexts[index], x, y};
+        setTexts(newTexts);
+      }
     };
   }, [picture, texts]);
 
