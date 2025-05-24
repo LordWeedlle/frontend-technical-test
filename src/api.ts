@@ -16,6 +16,9 @@ export class NotFoundError extends Error {
 
 function checkStatus(response: Response) {
   if (response.status === 401) {
+    localStorage.removeItem('jwt');
+    window.location.href = '/login';
+
     throw new UnauthorizedError();
   }
   if (response.status === 404) {
